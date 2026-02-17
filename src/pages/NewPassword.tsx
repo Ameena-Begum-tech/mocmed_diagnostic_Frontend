@@ -9,20 +9,32 @@ const NewPassword = () => {
 
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await axios.post("http://localhost:5000/api/auth/reset-password", { userId, password });
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/reset-password`,
+        { userId, password }
+      );
 
-    setSuccess("Password reset successful");
+      setSuccess("Password reset successful");
 
-    setTimeout(() => navigate("/login"), 1500);
+      setTimeout(() => navigate("/login"), 1500);
+
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Reset failed");
+    }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <form onSubmit={handleSubmit} className="bg-white p-8 shadow rounded w-96 space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 shadow rounded w-96 space-y-4"
+      >
         <h2 className="text-xl font-bold text-center">Set New Password</h2>
 
         <input
@@ -34,6 +46,7 @@ const NewPassword = () => {
         />
 
         {success && <p className="text-green-600 text-sm">{success}</p>}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <button className="w-full bg-green-600 text-white py-3 rounded">
           Reset Password
