@@ -36,37 +36,22 @@ const Reports = () => {
     fetchReports();
   }, []);
 
-  const handleDownload = async (id: string) => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/reports/download/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-          responseType: "blob",
-        }
-      );
+ const handlePreview = (id: string) => {
+  const token = getToken();
+  window.open(
+    `${import.meta.env.VITE_API_URL}/api/reports/view/${id}?token=${token}`,
+    "_blank"
+  );
+};
 
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "report.pdf");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      alert("Download failed or unauthorized");
-    }
-  };
+const handleDownload = (id: string) => {
+  const token = getToken();
+  window.open(
+    `${import.meta.env.VITE_API_URL}/api/reports/download/${id}?token=${token}`,
+    "_blank"
+  );
+};
 
-  const handlePreview = (id: string) => {
-    const token = getToken();
-    window.open(
-      `${import.meta.env.VITE_API_URL}/api/reports/view/${id}?token=${token}`,
-      "_blank"
-    );
-  };
 
   if (loading)
     return <div className="text-center mt-20">Loading reports...</div>;
