@@ -28,12 +28,13 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:5000/api/auth/register",
-        form,
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        form
       );
 
       // redirect to OTP page with userId
       navigate("/verify-otp", { state: { userId: res.data.userId } });
+
     } catch (err: any) {
       setError(err.response?.data?.message || "Registration failed");
     } finally {
