@@ -6,23 +6,35 @@ const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/forgot-password", { email });
+      setLoading(true);
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
+        { email }
+      );
 
       navigate("/reset-otp", { state: { userId: res.data.userId } });
 
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <form onSubmit={handleSubmit} className="bg-white p-8 shadow rounded w-96 space-y-4">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-8 shadow rounded w-96 space-y-4"
+      >
         <h2 className="text-xl font-bold text-center">Forgot Password</h2>
 
         <input
@@ -35,8 +47,11 @@ const ForgotPassword = () => {
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <button className="w-full bg-blue-600 text-white py-3 rounded">
-          Send OTP
+        <button
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-3 rounded disabled:opacity-50"
+        >
+          {loading ? "Sending OTP..." : "Send OTP"}
         </button>
       </form>
     </div>
@@ -44,3 +59,4 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
+
