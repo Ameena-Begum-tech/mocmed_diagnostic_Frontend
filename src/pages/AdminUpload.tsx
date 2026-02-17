@@ -21,9 +21,12 @@ const AdminUpload = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/auth/patients", {
-          headers: { Authorization: `Bearer ${getToken()}` },
-        });
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/auth/patients`,
+          {
+            headers: { Authorization: `Bearer ${getToken()}` },
+          }
+        );
         setPatients(res.data);
       } catch (err) {
         alert("Not authorized");
@@ -45,12 +48,16 @@ const AdminUpload = () => {
     data.append("report", form.file);
 
     try {
-      await axios.post("http://localhost:5000/api/reports/upload", data, {
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/reports/upload`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       alert("Report uploaded successfully");
     } catch {
