@@ -1,206 +1,28 @@
-// import { Link } from 'react-router-dom';
-// import { Heart, Users, Clock, Award, Home as HomeIcon, FileText, CheckCircle, Star, ArrowRight } from 'lucide-react';
-// import { packages } from '../data/packages';
-// import { testimonials } from '../data/testimonials';
-// import { useCart } from '../context/CartContext';
-
-// const Home = () => {
-//   const { addToCart } = useCart();
-
-//   const handleAddToCart = (pkg: typeof packages[0]) => {
-//     addToCart({
-//       id: pkg.id,
-//       name: pkg.name,
-//       price: pkg.price,
-//       type: 'package',
-//       tests: pkg.tests,
-//     });
-//   };
-
-//   const features = [
-//     { icon: Award, title: 'Certified Technicians', description: 'Trained professionals with years of experience' },
-//     { icon: HomeIcon, title: 'At-Home Sample Collection', description: 'Convenient doorstep service' },
-//     { icon: Clock, title: 'Fast & Accurate Reports', description: 'Results within 24-48 hours' },
-//     { icon: Heart, title: 'Affordable Pricing', description: 'Quality diagnostics at competitive rates' },
-//     { icon: CheckCircle, title: 'NABL Partnered Labs', description: 'Accredited laboratories' },
-//     { icon: Users, title: '24/7 Support', description: 'Always available to assist' },
-//   ];
-
-//   const steps = [
-//     { number: '01', title: 'Book your package', description: 'Choose from our health packages' },
-//     { number: '02', title: 'Home visit for sample collection', description: 'Our technician visits you' },
-//     { number: '03', title: 'Download your report', description: 'Access results online' },
-//   ];
-
-//   const popularPackages = packages.slice(0, 6);
-
-//   return (
-//     <div className="min-h-screen">
-//       <section className="relative bg-gradient-to-br from-blue-50 to-green-50 py-20">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="text-center max-w-4xl mx-auto">
-//             <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-//               Comprehensive Diagnostic Services at <span className="text-[#0A7DCF]">Your Convenience</span>
-//             </h1>
-//             <p className="text-xl text-gray-600 mb-8">
-//               Accurate tests, home sample collection, expert care — designed for your well-being.
-//             </p>
-//             <div className="flex flex-col sm:flex-row justify-center gap-4">
-//               <Link to="/packages" className="bg-[#0A7DCF] hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold transition-all inline-flex items-center justify-center">
-//                 Explore Packages <ArrowRight className="ml-2 w-5 h-5" />
-//               </Link>
-//               <Link to="/contact" className="bg-[#0EB39C] hover:bg-green-700 text-white px-8 py-4 rounded-lg font-semibold transition-all inline-flex items-center justify-center">
-//                 Book Now
-//               </Link>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-
-//       <section className="py-16 bg-white">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="text-center mb-12">
-//             <h2 className="text-4xl font-bold text-gray-900 mb-4">Popular Health Packages</h2>
-//             <p className="text-lg text-gray-600">Comprehensive health screening packages tailored to your needs</p>
-//           </div>
-
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-//             {popularPackages.map((pkg) => (
-//               <div key={pkg.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-xl transition-all">
-//                 <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-//                 <p className="text-gray-600 text-sm mb-4">{pkg.description}</p>
-//                 <div className="mb-4">
-//                   <p className="text-sm text-gray-500 mb-2">Includes {pkg.tests.length} tests:</p>
-//                   <ul className="text-sm text-gray-600 space-y-1">
-//                     {pkg.tests.slice(0, 3).map((test, index) => (
-//                       <li key={index} className="flex items-start">
-//                         <CheckCircle className="w-4 h-4 text-[#0EB39C] mr-2 mt-0.5 flex-shrink-0" />
-//                         {test}
-//                       </li>
-//                     ))}
-//                     {pkg.tests.length > 3 && <li className="text-[#0A7DCF] font-medium">+{pkg.tests.length - 3} more tests</li>}
-//                   </ul>
-//                 </div>
-//                 <div className="flex items-end justify-between mb-4">
-//                   <p className="text-3xl font-bold text-[#0A7DCF]">₹{pkg.price}</p>
-//                 </div>
-//                 <div className="flex flex-col sm:flex-row gap-2">
-//                   <Link to="/packages" className="flex-1 border border-[#0A7DCF] text-[#0A7DCF] px-4 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-center">
-//                     View Details
-//                   </Link>
-//                   <button onClick={() => handleAddToCart(pkg)} className="flex-1 bg-[#0EB39C] hover:bg-green-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
-//                     Add to Cart
-//                   </button>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-
-//       <section className="py-16 bg-gray-50">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="text-center mb-12">
-//             <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Us</h2>
-//           </div>
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-//             {features.map((feature, index) => (
-//               <div key={index} className="bg-white rounded-xl p-6 hover:shadow-lg transition-all">
-//                 <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-//                   <feature.icon className="w-8 h-8 text-[#0A7DCF]" />
-//                 </div>
-//                 <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-//                 <p className="text-gray-600">{feature.description}</p>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-
-//       <section className="py-16 bg-white">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="text-center mb-12">
-//             <h2 className="text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-//           </div>
-//           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-//             {steps.map((step, index) => (
-//               <div key={index} className="relative">
-//                 <div className="bg-gradient-to-br from-[#0A7DCF] to-[#0EB39C] rounded-xl p-8 text-white">
-//                   <div className="text-5xl font-bold opacity-20 mb-4">{step.number}</div>
-//                   <h3 className="text-2xl font-bold mb-3">{step.title}</h3>
-//                   <p className="text-blue-50">{step.description}</p>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-
-//       <section className="py-16 bg-gray-50">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="text-center mb-12">
-//             <h2 className="text-4xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
-//           </div>
-//           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-//             {testimonials.map((testimonial) => (
-//               <div key={testimonial.id} className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-shadow">
-//                 <div className="flex mb-4">
-//                   {[...Array(testimonial.rating)].map((_, i) => (
-//                     <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-//                   ))}
-//                 </div>
-//                 <p className="text-gray-600 mb-4 italic">"{testimonial.content}"</p>
-//                 <p className="text-gray-900 font-semibold">— {testimonial.name}</p>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// };
-
-// export default Home;
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Award,
   Star,
-  ArrowRight,
-  Activity,
-  Droplet,
   Calendar,
   Phone,
   CheckCircle,
+  Clock,
   FileText,
   Shield,
-  Clock,
-  ChevronLeft,
-  ChevronRight,
-  Quote,
   Home as HomeIcon,
   Search,
+  Droplet,           // ← Fixed: Added this import
 } from 'lucide-react';
 
 // ── Hero Content ──────────────────────────────────────────────────────────
-const HERO_TITLE = "Your Wellness Partner for Accurate Diagnostics";
 const HERO_DESCRIPTION =
   "Experience healthcare excellence with our comprehensive diagnostic services. From routine checkups to specialized tests, we're committed to your health journey with precision, care, and convenience.";
 
 const HERO_IMAGES = [
-  {
-    src: "https://img.rocket.new/generatedImages/rocket_gen_img_1cac3c4b8-1768764885880.png",
-    alt: "Modern medical laboratory with advanced diagnostic equipment",
-  },
-  {
-    src: "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&q=80&w=1200",
-    alt: "Lab technician examining test samples",
-  },
-  {
-    src: "https://img.rocket.new/generatedImages/rocket_gen_img_1cac3c4b8-1768764885880.png",
-    alt: "Professional clinical sample collection",
-  },
+  "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&q=80&w=1200",
+  "https://images.unsplash.com/photo-1579684384363-3a4e48e3e0c0?auto=format&fit=crop&q=80&w=1200",
+  "https://images.unsplash.com/photo-1615486511484-92d172cc0d98?auto=format&fit=crop&q=80&w=1200",
 ];
 
 // ── Packages, Features, Steps, Testimonials ───────────────────────────────
@@ -271,13 +93,18 @@ const TESTIMONIALS = [
   { name: "Amit Patel", text: "Best diagnostic center — affordable packages and skilled staff.", rating: 5 },
   { name: "Sneha Reddy", text: "Outstanding experience from booking to report delivery.", rating: 5 },
   { name: "Vikram Singh", text: "Highly professional — perfect for senior citizens.", rating: 5 },
+  { name: "Anjali Verma", text: "Trustworthy lab with friendly staff and clean facilities.", rating: 5 },
+  { name: "Suresh Babu", text: "Very satisfied with the home sample collection process.", rating: 5 },
+  { name: "Meena Rani", text: "Reports are detailed and explained well by the team.", rating: 5 },
+  { name: "Rohit Sharma", text: "Best prices and accurate results every time!", rating: 5 },
+  { name: "Kavita Joshi", text: "Highly recommend for all diagnostic needs.", rating: 5 },
 ];
 
 // ────────────────────────────────────────────────────────────────────────────
 
 export default function Home() {
   const [heroIndex, setHeroIndex] = useState(0);
-  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -289,21 +116,11 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const currentImage = HERO_IMAGES[heroIndex];
-
-  function handlePrevTestimonial() {
-    setTestimonialIndex((prev) => (prev === 0 ? TESTIMONIALS.length - 1 : prev - 1));
-  }
-
-  function handleNextTestimonial() {
-    setTestimonialIndex((prev) => (prev + 1) % TESTIMONIALS.length);
-  }
-
   return (
     <div className="min-h-screen bg-white">
 
-      {/* ── Hero Section (exactly matching your Rocket layout + single rotating image) ── */}
-      <section className="relative bg-gradient-to-br from-blue-50 via-white to-teal-50 pt-24 lg:pt-32 pb-12 lg:pb-20 overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-br from-blue-50 via-white to-teal-50 pt-16 lg:pt-20 pb-12 lg:pb-20 overflow-hidden">
         <div className="absolute inset-0 opacity-5 pointer-events-none">
           <div className="absolute top-20 left-10 w-64 h-64 bg-[#0A7DCF] rounded-full blur-3xl" />
           <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#0EB39C] rounded-full blur-3xl" />
@@ -311,7 +128,7 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left side - text content */}
+            {/* Left - Text */}
             <div className="text-center lg:text-left">
               <div className="inline-flex items-center space-x-2 px-4 py-2 bg-[#0A7DCF] bg-opacity-10 rounded-full mb-4 lg:mb-6">
                 <Award className="w-5 h-5 text-[#0A7DCF]" />
@@ -334,10 +151,10 @@ export default function Home() {
                   <Calendar className="w-5 h-5 mr-2" /> Book Appointment
                 </Link>
                 <button
-                  onClick={() => window.location.href = "tel:+15551234567"}
+                  onClick={() => window.location.href = "tel:+919876543210"}
                   className="border-2 border-[#0A7DCF] text-[#0A7DCF] px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition flex items-center justify-center"
                 >
-                  <Phone className="w-5 h-5 mr-2" /> Emergency: +1 555-123-4567
+                  <Phone className="w-5 h-5 mr-2" /> Call: +91 9876543210
                 </button>
               </div>
 
@@ -359,39 +176,42 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right side - single rotating image + badges (exact positioning from your Rocket code) */}
+            {/* Right - Image + Badges */}
             <div className="relative mt-8 lg:mt-0">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <img
                   key={heroIndex}
-                  src={currentImage.src}
-                  alt={currentImage.alt}
+                  src={HERO_IMAGES[heroIndex]}
+                  alt="Diagnostic Lab"
                   className="w-full h-64 md:h-80 lg:h-96 object-cover transition-opacity duration-1000 ease-in-out"
+                  onError={(e) => {
+                    e.currentTarget.src = "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&q=80&w=1200";
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
               </div>
 
               {/* Bottom-left badge */}
-              <div className="absolute -bottom-4 -left-4 lg:-left-8 bg-white rounded-xl shadow-lg p-4 lg:p-6 max-w-xs">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-teal-100 flex items-center justify-center">
-                    <CheckCircle className="w-6 h-6 lg:w-7 lg:h-7 text-teal-600" />
+              <div className="absolute -bottom-3 -left-3 lg:-left-6 bg-white rounded-xl shadow-lg p-3 lg:p-4 max-w-[180px] lg:max-w-xs">
+                <div className="flex items-center space-x-2 lg:space-x-3">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-teal-100 flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-teal-600" />
                   </div>
                   <div>
-                    <div className="text-lg lg:text-xl font-bold text-gray-900">99.9%</div>
+                    <div className="text-base lg:text-lg font-bold text-gray-900">99.9%</div>
                     <div className="text-xs lg:text-sm text-gray-600">Accuracy Rate</div>
                   </div>
                 </div>
               </div>
 
               {/* Top-right badge */}
-              <div className="absolute -top-4 -right-4 lg:-right-8 bg-white rounded-xl shadow-lg p-4 lg:p-6 max-w-xs">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-blue-100 flex items-center justify-center">
-                    <Clock className="w-6 h-6 lg:w-7 lg:h-7 text-[#0A7DCF]" />
+              <div className="absolute -top-3 -right-3 lg:-right-6 bg-white rounded-xl shadow-lg p-3 lg:p-4 max-w-[180px] lg:max-w-xs">
+                <div className="flex items-center space-x-2 lg:space-x-3">
+                  <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Clock className="w-5 h-5 lg:w-6 lg:h-6 text-[#0A7DCF]" />
                   </div>
                   <div>
-                    <div className="text-lg lg:text-xl font-bold text-gray-900">24 Hours</div>
+                    <div className="text-base lg:text-lg font-bold text-gray-900">24 Hours</div>
                     <div className="text-xs lg:text-sm text-gray-600">Report Delivery</div>
                   </div>
                 </div>
@@ -401,7 +221,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Popular Packages ──────────────────────────────────────────────────── */}
+      {/* ── Popular Health Packages ──────────────────────────────────────────── */}
       <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl lg:text-5xl font-bold text-center mb-4">Popular Health Packages</h2>
@@ -413,7 +233,7 @@ export default function Home() {
             {PACKAGES.map((pkg) => (
               <div
                 key={pkg.id}
-                className={`relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 pt-10 ${
+                className={`relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 min-h-[340px] flex flex-col ${
                   pkg.popular ? 'border-teal-200 bg-teal-50/20' : ''
                 }`}
               >
@@ -425,33 +245,38 @@ export default function Home() {
                   </div>
                 )}
 
-                <div className="p-6 lg:p-8">
-                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 line-clamp-1">
+                <div className="p-6 lg:p-7 flex flex-col flex-grow">
+                  <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-3 line-clamp-2">
                     {pkg.name}
                   </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2 leading-relaxed">
+                  <p className="text-sm lg:text-base text-gray-600 mb-4 flex-grow">
                     {pkg.description}
                   </p>
 
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-4">
                     <div>
-                      <span className="text-3xl lg:text-4xl font-bold text-[#0A7DCF]">
+                      <span className="text-2xl lg:text-3xl font-bold text-[#0A7DCF]">
                         ₹{pkg.price.toLocaleString()}
                       </span>
-                      <span className="text-sm text-gray-500 line-through ml-3">
+                      <span className="text-xs lg:text-sm text-gray-500 line-through ml-2">
                         ₹{pkg.originalPrice.toLocaleString()}
                       </span>
                     </div>
-                    <span className="text-green-600 font-semibold">{pkg.discount}% OFF</span>
+                    <span className="text-green-600 font-semibold text-sm lg:text-base">{pkg.discount}% OFF</span>
                   </div>
 
-                  <div className="text-sm text-gray-600 mb-6">
-                    Includes <span className="font-semibold text-gray-900">{pkg.tests} tests</span>
+                  <div className="text-xs lg:text-sm text-gray-600 mb-4 space-y-1">
+                    {pkg.features.map((f, i) => (
+                      <div key={i} className="flex items-center gap-1.5">
+                        <CheckCircle className="w-3.5 h-3.5 text-green-500" />
+                        <span>{f}</span>
+                      </div>
+                    ))}
                   </div>
 
                   <Link
                     to="/packages#top"
-                    className="block w-full bg-[#0EB39C] text-white py-3.5 rounded-lg font-medium text-center hover:bg-teal-700 transition"
+                    className="mt-auto block w-full bg-[#0EB39C] text-white py-3 rounded-lg font-medium text-center hover:bg-teal-700 transition text-sm lg:text-base"
                   >
                     Book Now
                   </Link>
@@ -487,8 +312,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── How It Works (classic Rocket style) ──────────────────────────────── */}
-      <section className="py-16 lg:py-20 bg-white relative">
+      {/* ── How It Works ──────────────────────────────────────────────────────── */}
+      <section className="py-16 lg:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">How It Works</h2>
@@ -497,10 +322,7 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Gradient line (desktop only) */}
-          <div className="hidden lg:block absolute top-1/2 left-8 right-8 h-1 bg-gradient-to-r from-[#0A7DCF] via-[#0EB39C] to-[#0EB39C] opacity-30 -translate-y-1/2 z-0" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {STEPS.map((step, index) => (
               <div key={index} className="relative">
                 <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 text-center">
@@ -522,13 +344,6 @@ export default function Home() {
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{step.desc}</p>
                 </div>
-
-                {/* Arrow between steps (desktop only) */}
-                {index < STEPS.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-6 transform -translate-y-1/2 z-20">
-                    <ArrowRight className="w-8 h-8 text-[#0A7DCF]" />
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -536,46 +351,40 @@ export default function Home() {
       </section>
 
       {/* ── Testimonials ──────────────────────────────────────────────────────── */}
-      <section className="py-16 lg:py-20 bg-gray-50">
+      <section className="py-16 lg:py-20 bg-gray-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4">What Our Patients Say</h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Read testimonials from our satisfied patients who trust us with their healthcare needs
+              Real experiences from patients who trust us with their health
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-8 lg:p-12">
-            <div className="flex justify-center mb-6">
-              {Array(TESTIMONIALS[testimonialIndex].rating)
-                .fill(0)
-                .map((_, i) => (
-                  <Star key={i} className="w-7 h-7 text-yellow-400 fill-current mx-1" />
-                ))}
+          <div
+            className="relative"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setTimeout(() => setIsPaused(false), 2500)}
+            onTouchStart={() => setIsPaused(true)}
+            onTouchEnd={() => setTimeout(() => setIsPaused(false), 2500)}
+          >
+            <div className="flex animate-marquee gap-6 py-4">
+              {TESTIMONIALS.concat(TESTIMONIALS).map((t, i) => (
+                <div
+                  key={i}
+                  className="flex-shrink-0 w-80 bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="flex justify-center mb-4">
+                    {Array(t.rating)
+                      .fill(0)
+                      .map((_, star) => (
+                        <Star key={star} className="w-5 h-5 text-yellow-400 fill-current mx-0.5" />
+                      ))}
+                  </div>
+                  <p className="text-gray-700 italic mb-4 line-clamp-4">"{t.text}"</p>
+                  <p className="text-right font-semibold text-gray-900">{t.name}</p>
+                </div>
+              ))}
             </div>
-
-            <p className="text-xl lg:text-2xl text-gray-800 italic text-center mb-8 leading-relaxed">
-              "{TESTIMONIALS[testimonialIndex].text}"
-            </p>
-
-            <p className="text-center font-bold text-lg">{TESTIMONIALS[testimonialIndex].name}</p>
-          </div>
-
-          <div className="flex justify-center gap-6 mt-10">
-            <button
-              onClick={handlePrevTestimonial}
-              className="p-4 rounded-full bg-white shadow-md hover:bg-gray-100 transition"
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={handleNextTestimonial}
-              className="p-4 rounded-full bg-white shadow-md hover:bg-gray-100 transition"
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
           </div>
         </div>
       </section>
