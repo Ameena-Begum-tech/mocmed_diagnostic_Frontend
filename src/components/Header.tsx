@@ -1,21 +1,38 @@
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingCart, Activity } from 'lucide-react';
-import { useState } from 'react';
-import { useCart } from '../context/CartContext';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, ShoppingCart, Activity } from "lucide-react";
+import { useState } from "react";
+import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { cartCount, openCart } = useCart();
 
+  // ✅ Only source of truth
+  const { isLoggedIn, role, logoutUser } = useAuth();
+
+  const handleLogout = () => {
+    logoutUser();
+    navigate("/");
+  };
+
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Packages', path: '/packages' },
-    { name: 'Custom Package', path: '/custom-package' },
-    // { name: 'Upload Documents', path: '/upload' },
-    // { name: 'Reports', path: '/reports' },
-    { name: 'About', path: '/about' },
-    { name: 'Contact', path: '/contact' },
+    { name: "Home", path: "/" },
+    { name: "Packages", path: "/packages" },
+    { name: "Custom Package", path: "/custom-package" },
+
+    // Patient
+    ...(role === "USER" ? [{ name: "Reports", path: "/reports" }] : []),
+
+    // Admin
+    ...(role === "SUPERADMIN"
+      ? [{ name: "Admin Panel", path: "/admin/upload-report" }]
+      : []),
+
+    { name: "About", path: "/about" },
+    { name: "Contact", path: "/contact" },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -27,7 +44,9 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-2">
             <Activity className="w-8 h-8 text-[#0A7DCF]" />
             <div>
-              <h1 className="text-2xl font-bold text-[#0A7DCF]">Mocmed Diagnostics</h1>
+              <h1 className="text-2xl font-bold text-[#0A7DCF]">
+                Mocmed Diagnostics
+              </h1>
               <p className="text-xs text-[#0EB39C]">Your Wellness Partner</p>
             </div>
           </Link>
@@ -39,16 +58,33 @@ const Header = () => {
                 to={link.path}
                 className={`transition-colors ${
                   isActive(link.path)
-                    ? 'text-[#0A7DCF] font-semibold'
-                    : 'text-gray-700 hover:text-[#0A7DCF]'
+                    ? "text-[#0A7DCF] font-semibold"
+                    : "text-gray-700 hover:text-[#0A7DCF]"
                 }`}
               >
                 {link.name}
               </Link>
             ))}
+
+            {!isLoggedIn ? (
+              <Link
+                to="/login"
+                className="bg-[#0A7DCF] text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+              >
+                Login
+              </Link>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
+            )}
+
             <button
               onClick={openCart}
-              className="relative p-2 text-gray-700 hover:text-[#0A7DCF] transition-colors"
+              className="relative p-2 text-gray-700 hover:text-[#0A7DCF]"
             >
               <ShoppingCart className="w-6 h-6" />
               {cartCount > 0 && (
@@ -62,20 +98,19 @@ const Header = () => {
           <div className="lg:hidden flex items-center space-x-4">
             <button
               onClick={openCart}
-              className="relative p-2 text-gray-700 hover:text-[#0A7DCF] transition-colors"
+              className="relative p-2 text-gray-700 hover:text-[#0A7DCF]"
             >
               <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#0EB39C] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
             </button>
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-[#0A7DCF] transition-colors"
+              className="text-gray-700 hover:text-[#0A7DCF]"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>
@@ -90,8 +125,8 @@ const Header = () => {
                   onClick={() => setIsMenuOpen(false)}
                   className={`transition-colors ${
                     isActive(link.path)
-                      ? 'text-[#0A7DCF] font-semibold'
-                      : 'text-gray-700 hover:text-[#0A7DCF]'
+                      ? "text-[#0A7DCF] font-semibold"
+                      : "text-gray-700 hover:text-[#0A7DCF]"
                   }`}
                 >
                   {link.name}
