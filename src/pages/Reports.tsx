@@ -17,12 +17,12 @@ const Reports = () => {
     const fetchReports = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/reports/my-reports",
+          `${import.meta.env.VITE_API_URL}/api/reports/my-reports`,
           {
             headers: {
               Authorization: `Bearer ${getToken()}`,
             },
-          },
+          }
         );
 
         setReports(res.data);
@@ -39,13 +39,13 @@ const Reports = () => {
   const handleDownload = async (id: string) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/reports/download/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/reports/download/${id}`,
         {
           headers: {
             Authorization: `Bearer ${getToken()}`,
           },
           responseType: "blob",
-        },
+        }
       );
 
       const url = window.URL.createObjectURL(new Blob([res.data]));
@@ -59,11 +59,12 @@ const Reports = () => {
       alert("Download failed or unauthorized");
     }
   };
+
   const handlePreview = (id: string) => {
     const token = getToken();
     window.open(
-      `http://localhost:5000/api/reports/view/${id}?token=${token}`,
-      "_blank",
+      `${import.meta.env.VITE_API_URL}/api/reports/view/${id}?token=${token}`,
+      "_blank"
     );
   };
 
