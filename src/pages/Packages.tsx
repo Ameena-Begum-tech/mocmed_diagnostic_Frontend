@@ -1,39 +1,3 @@
-// import { CheckCircle } from 'lucide-react';
-// import { packages } from '../data/packages';
-// import { useCart } from '../context/CartContext';
-
-// const Packages = () => {
-//   const { addToCart } = useCart();
-
-//   const handleAddToCart = (pkg: typeof packages[0]) => {
-//     addToCart({ id: pkg.id, name: pkg.name, price: pkg.price, type: 'package', tests: pkg.tests });
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 py-12">
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//         <div className="text-center mb-12">
-//           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Health Packages</h1>
-//         </div>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-//           {packages.map((pkg) => (
-//             <div key={pkg.id} className="bg-white rounded-xl shadow-md p-6">
-//               <h3 className="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
-//               <p className="text-gray-600 mb-4">{pkg.description}</p>
-//               <p className="text-3xl font-bold text-[#0A7DCF] mb-4">₹{pkg.price}</p>
-//               <button onClick={() => handleAddToCart(pkg)} className="w-full bg-[#0EB39C] hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold">
-//                 Add to Cart
-//               </button>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Packages;
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -74,7 +38,6 @@ const packagesData = [
     rating: 4.8,
     reviews: 2847,
     description: "Comprehensive screening covering cardiac, liver, kidney, thyroid, diabetes & vitamins.",
-    image: "https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 2,
@@ -92,7 +55,6 @@ const packagesData = [
     rating: 4.6,
     reviews: 1342,
     description: "Essential full body check covering major organs and metabolic health markers.",
-    image: "https://images.unsplash.com/photo-1579684384363-3a4e48e3e0c0?auto=format&fit=crop&q=80&w=800"
   },
 
   // Cardiac Health
@@ -112,7 +74,6 @@ const packagesData = [
     rating: 4.7,
     reviews: 1923,
     description: "Advanced heart screening with lipid profile, ECG & inflammation markers.",
-    image: "https://images.unsplash.com/photo-1615486511484-92d172cc0d98?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 4,
@@ -130,7 +91,6 @@ const packagesData = [
     rating: 4.8,
     reviews: 987,
     description: "Complete cardiac evaluation including enzymes, ECG and stress markers.",
-    image: "https://images.unsplash.com/photo-1581092160560-1c1e428e9d65?auto=format&fit=crop&q=80&w=800"
   },
 
   // Diabetes
@@ -150,7 +110,6 @@ const packagesData = [
     rating: 4.6,
     reviews: 1456,
     description: "HbA1c, fasting & post-meal glucose, insulin & kidney function monitoring.",
-    image: "https://images.unsplash.com/photo-1580281780460-6f0b3f3e7e5f?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 6,
@@ -168,7 +127,6 @@ const packagesData = [
     rating: 4.7,
     reviews: 1123,
     description: "Extended diabetes screening with pancreatic function & neuropathy markers.",
-    image: "https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?auto=format&fit=crop&q=80&w=800"
   },
 
   // Thyroid
@@ -188,7 +146,6 @@ const packagesData = [
     rating: 4.5,
     reviews: 987,
     description: "T3, T4, TSH, antibodies for full thyroid health evaluation.",
-    image: "https://images.unsplash.com/photo-1581092160560-1c1e428e9d65?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 8,
@@ -206,7 +163,6 @@ const packagesData = [
     rating: 4.6,
     reviews: 765,
     description: "Includes reverse T3 & detailed autoimmune thyroid markers.",
-    image: "https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?auto=format&fit=crop&q=80&w=800"
   },
 
   // Liver Function
@@ -226,7 +182,6 @@ const packagesData = [
     rating: 4.6,
     reviews: 876,
     description: "Complete liver enzymes, bilirubin, protein & hepatitis screening.",
-    image: "https://images.unsplash.com/photo-1581092160560-1c1e428e9d65?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 10,
@@ -244,7 +199,6 @@ const packagesData = [
     rating: 4.7,
     reviews: 654,
     description: "Extended liver panel with fibrosis markers & fatty liver assessment.",
-    image: "https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?auto=format&fit=crop&q=80&w=800"
   },
 
   // Kidney Function
@@ -264,7 +218,6 @@ const packagesData = [
     rating: 4.5,
     reviews: 743,
     description: "Creatinine, BUN, electrolytes, urine analysis & GFR calculation.",
-    image: "https://images.unsplash.com/photo-1581092160560-1c1e428e9d65?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 12,
@@ -282,7 +235,6 @@ const packagesData = [
     rating: 4.6,
     reviews: 521,
     description: "Extended kidney screening with stone risk & electrolyte balance.",
-    image: "https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?auto=format&fit=crop&q=80&w=800"
   },
 
   // Women Health
@@ -302,7 +254,6 @@ const packagesData = [
     rating: 4.9,
     reviews: 2134,
     description: "Hormonal profile, reproductive health, bone density, thyroid & anemia screening.",
-    image: "https://images.unsplash.com/photo-1579684384363-3a4e48e3e0c0?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 14,
@@ -320,7 +271,6 @@ const packagesData = [
     rating: 4.7,
     reviews: 987,
     description: "Specialized for PCOS/PCOD with hormonal, insulin & ovarian marker screening.",
-    image: "https://images.unsplash.com/photo-1581092160560-1c1e428e9d65?auto=format&fit=crop&q=80&w=800"
   },
 
   // Men Health
@@ -340,7 +290,6 @@ const packagesData = [
     rating: 4.7,
     reviews: 1678,
     description: "Testosterone, PSA, cardiac, liver, kidney & complete metabolic panel.",
-    image: "https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?auto=format&fit=crop&q=80&w=800"
   },
   {
     id: 16,
@@ -358,7 +307,6 @@ const packagesData = [
     rating: 4.6,
     reviews: 912,
     description: "Focused on prostate health, testosterone & male hormonal balance screening.",
-    image: "https://images.unsplash.com/photo-1581092160560-1c1e428e9d65?auto=format&fit=crop&q=80&w=800"
   }
 ];
 
@@ -463,6 +411,9 @@ export default function Packages() {
     });
   };
 
+  // Unified image for all cards (same as Diabetes Care Plus)
+  const unifiedCardImage = "https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?auto=format&fit=crop&q=80&w=800";
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Toast */}
@@ -473,9 +424,16 @@ export default function Packages() {
         </div>
       )}
 
-      {/* Hero */}
-      <div className="bg-gradient-to-r from-[#0A7DCF] to-[#0EB39C] text-white py-16 md:py-20 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+      {/* Hero with background image + gradient overlay */}
+      <div className="relative bg-cover bg-center bg-no-repeat text-white py-16 md:py-20 lg:py-24"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1581093450021-4a7360e9a6b5?auto=format&fit=crop&q=80&w=2000')`,
+        }}
+      >
+        {/* Dark gradient overlay for readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 text-center z-10">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">Health Packages</h1>
           <p className="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
             Choose from our expertly curated diagnostic packages designed for complete health monitoring
@@ -503,9 +461,9 @@ export default function Packages() {
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Desktop Filters Sidebar – restored */}
+          {/* Desktop Filters Sidebar – now scrollable */}
           <div className="hidden lg:block w-full lg:w-80 flex-shrink-0">
-            <div className="sticky top-24 bg-white rounded-xl shadow-sm p-6 border">
+            <div className="sticky top-24 bg-white rounded-xl shadow-sm p-6 border max-h-[80vh] overflow-y-auto">
               <div className="flex items-center justify-between mb-6 pb-4 border-b">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                   <SlidersHorizontal className="w-5 h-5" />
@@ -611,7 +569,7 @@ export default function Packages() {
             </div>
           </div>
 
-          {/* Packages Grid */}
+          {/* Packages Grid - now 3 columns on large screens */}
           <div className="flex-1">
             {filteredPackages.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-xl shadow-sm">
@@ -628,18 +586,18 @@ export default function Packages() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
                 {filteredPackages.map((pkg) => (
                   <div
                     key={pkg.id}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-[380px] mx-auto flex flex-col"
+                    className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-100 max-w-[340px] mx-auto flex flex-col"
                   >
-                    {/* Image */}
-                    <div className="relative h-52 overflow-hidden">
+                    {/* Image - same for all cards */}
+                    <div className="relative h-48 overflow-hidden">
                       <img
-                        src={pkg.image}
+                        src={unifiedCardImage}
                         alt={pkg.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                       />
                       {pkg.popular && (
                         <span className="absolute top-4 left-4 bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-md">
@@ -653,8 +611,8 @@ export default function Packages() {
                       )}
                     </div>
 
-                    {/* Content */}
-                    <div className="p-4 flex flex-col flex-grow">
+                    {/* Content - smaller fonts, full visibility */}
+                    <div className="p-5 flex flex-col flex-grow">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-xs font-medium text-[#0A7DCF] bg-blue-50 px-2.5 py-1 rounded-full">
                           {pkg.category}
@@ -666,8 +624,10 @@ export default function Packages() {
                         </div>
                       </div>
 
-                      <h3 className="text-lg font-bold text-gray-900 mb-1.5 line-clamp-1">{pkg.name}</h3>
-                      <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-2">
+                      <h3 className="text-base font-bold text-gray-900 mb-2 line-clamp-2">
+                        {pkg.name}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4 leading-relaxed line-clamp-3">
                         {pkg.description}
                       </p>
 
@@ -703,11 +663,11 @@ export default function Packages() {
 
                       <div className="flex items-center justify-between mb-5 mt-auto">
                         <div className="flex items-baseline gap-2">
-                          <span className="text-2xl font-bold text-[#0A7DCF]">
+                          <span className="text-xl font-bold text-[#0A7DCF]">
                             ₹{pkg.price.toLocaleString()}
                           </span>
                           {pkg.originalPrice > pkg.price && (
-                            <span className="text-sm text-gray-500 line-through">
+                            <span className="text-xs text-gray-500 line-through">
                               ₹{pkg.originalPrice.toLocaleString()}
                             </span>
                           )}
@@ -865,7 +825,7 @@ export default function Packages() {
         </div>
       )}
 
-      {/* Details Modal – health/test focused */}
+      {/* Details Modal */}
       <AnimatePresence>
         {selectedPackage && (
           <motion.div
@@ -907,7 +867,7 @@ export default function Packages() {
                     </p>
                   </div>
                   <img
-                    src={selectedPackage.image}
+                    src={unifiedCardImage}
                     alt={selectedPackage.name}
                     className="w-full sm:w-40 h-40 object-cover rounded-xl shadow"
                   />
