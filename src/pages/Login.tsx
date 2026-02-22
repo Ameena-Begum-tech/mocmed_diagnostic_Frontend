@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+
 import { useNavigate } from "react-router-dom";
 import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
 import { auth } from "../firebase";
@@ -11,7 +12,7 @@ const { login } = useAuth();
 
 const [phone, setPhone] = useState("");
 const [otp, setOtp] = useState("");
-const [confirmation, setConfirmation] = useState(null);
+const [confirmation, setConfirmation] = useState<any>(null);
 const [loading, setLoading] = useState(false);
 const [step, setStep] = useState(1);
 const [error, setError] = useState("");
