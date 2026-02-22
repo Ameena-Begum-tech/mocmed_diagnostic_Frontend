@@ -36,7 +36,7 @@ const Reports = () => {
     fetchReports();
   }, []);
 
- const handlePreview = (id: string) => {
+const handlePreview = (id: string) => {
   const token = getToken();
   window.open(
     `${import.meta.env.VITE_API_URL}/api/reports/view/${id}?token=${token}`,
