@@ -1,12 +1,14 @@
+// Login.tsx
+// Language: React + TypeScript (TSX)
+
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Link } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth(); // 🔥 correct usage (top level)
+  const { login } = useAuth();
 
   const [form, setForm] = useState({
     loginId: "",
@@ -19,23 +21,23 @@ const Login = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        form,
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        form
       );
 
-      // Save token + role into AuthContext
       login(res.data.token, res.data.role);
 
-      // redirect to home
       navigate("/", { replace: true });
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
+    } catch (err) {
+      const message =
+        (err as any)?.response?.data?.message || "Login failed";
+      setError(message);
     }
   };
 
@@ -77,6 +79,7 @@ const Login = () => {
         >
           Login
         </button>
+
         <Link
           to="/forgot-password"
           className="text-sm text-blue-600 text-center block"
