@@ -57,30 +57,34 @@ setLoading(true);
 
 // Verify OTP
 const verifyOtp = async () => {
+if (!confirmation) {
+setError("Please request OTP first");
+return;
+}
+
 try {
 setLoading(true);
-const result = await confirmation.confirm(otp);
 
 ```
-  const idToken = await result.user.getIdToken();
+const result = await confirmation.confirm(otp);
+const idToken = await result.user.getIdToken();
 
-  // send token to backend
-  const res = await axios.post(
-    `${import.meta.env.VITE_API_URL}/api/auth/phone-auth`,
-    { token: idToken }
-  );
+const res = await axios.post(
+  `${import.meta.env.VITE_API_URL}/api/auth/phone-auth`,
+  { token: idToken }
+);
 
-  login(res.data.token, res.data.role);
-  navigate("/", { replace: true });
+login(res.data.token, res.data.role);
+navigate("/", { replace: true });
+```
 
 } catch (err) {
-  setError("Invalid OTP");
+setError("Invalid OTP");
 } finally {
-  setLoading(false);
+setLoading(false);
 }
-```
-
 };
+
 
 return ( <div className="flex justify-center items-center min-h-screen bg-gray-100"> <div className="bg-white p-8 rounded-xl shadow-lg w-96 space-y-4">
 
