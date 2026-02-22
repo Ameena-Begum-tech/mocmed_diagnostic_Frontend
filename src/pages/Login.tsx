@@ -1,103 +1,138 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { auth } from "../firebase";
 import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const { login } = useAuth();
+const navigate = useNavigate();
+const { login } = useAuth();
 
-  const [form, setForm] = useState({
-    loginId: "",
-    password: "",
-  });
+const [phone, setPhone] = useState("");
+const [otp, setOtp] = useState("");
+const [confirmation, setConfirmation] = useState(null);
+const [loading, setLoading] = useState(false);
+const [step, setStep] = useState(1);
+const [error, setError] = useState("");
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+// Initialize reCAPTCHA
+useEffect(() => {
+if (!window.recaptchaVerifier) {
+window.recaptchaVerifier = new RecaptchaVerifier(
+auth,
+"recaptcha-container",
+{ size: "invisible" }
+);
+window.recaptchaVerifier.render();
+}
+}, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+// Send OTP
+const sendOtp = async () => {
+try {
+setError("");
+setLoading(true);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+```
+  const formattedPhone = "+91" + phone.replace(/\D/g, "");
 
-    try {
-      setLoading(true);
+  const confirmationResult = await signInWithPhoneNumber(
+    auth,
+    formattedPhone,
+    window.recaptchaVerifier
+  );
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        form
-      );
+  setConfirmation(confirmationResult);
+  setStep(2);
+} catch (err) {
+  setError("Failed to send OTP");
+} finally {
+  setLoading(false);
+}
+```
 
-      login(res.data.token, res.data.role);
+};
 
-      navigate("/", { replace: true });
+// Verify OTP
+const verifyOtp = async () => {
+try {
+setLoading(true);
+const result = await confirmation.confirm(otp);
 
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+```
+  const idToken = await result.user.getIdToken();
 
-  return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-xl shadow-lg w-96 space-y-4"
-      >
-        <h2 className="text-2xl font-bold text-center text-[#0A7DCF]">
-          Patient Login
-        </h2>
+  // send token to backend
+  const res = await axios.post(
+    `${import.meta.env.VITE_API_URL}/api/auth/phone-auth`,
+    { token: idToken }
+  );
 
+  login(res.data.token, res.data.role);
+  navigate("/", { replace: true });
+
+} catch (err) {
+  setError("Invalid OTP");
+} finally {
+  setLoading(false);
+}
+```
+
+};
+
+return ( <div className="flex justify-center items-center min-h-screen bg-gray-100"> <div className="bg-white p-8 rounded-xl shadow-lg w-96 space-y-4">
+
+```
+    <h2 className="text-2xl font-bold text-center text-[#0A7DCF]">
+      Phone Login
+    </h2>
+
+    {step === 1 ? (
+      <>
+        <input
+          type="tel"
+          placeholder="Enter phone number"
+          className="w-full border p-3 rounded-lg"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <button
+          onClick={sendOtp}
+          disabled={loading}
+          className="w-full bg-[#0A7DCF] text-white py-3 rounded-lg"
+        >
+          {loading ? "Sending..." : "Send OTP"}
+        </button>
+      </>
+    ) : (
+      <>
         <input
           type="text"
-          name="loginId"
-          placeholder="Username / Email / Phone"
+          placeholder="Enter OTP"
           className="w-full border p-3 rounded-lg"
-          value={form.loginId}
-          onChange={handleChange}
-          required
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
         />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          className="w-full border p-3 rounded-lg"
-          value={form.password}
-          onChange={handleChange}
-          required
-        />
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
         <button
-          type="submit"
+          onClick={verifyOtp}
           disabled={loading}
-          className="w-full bg-[#0A7DCF] text-white py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
+          className="w-full bg-green-600 text-white py-3 rounded-lg"
         >
-          {loading ? "Signing in..." : "Login"}
+          {loading ? "Verifying..." : "Verify OTP"}
         </button>
+      </>
+    )}
 
-        <Link
-          to="/forgot-password"
-          className="text-sm text-blue-600 text-center block"
-        >
-          Forgot Password?
-        </Link>
+    {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <p className="text-center text-sm">
-          Don’t have an account?{" "}
-          <Link to="/register" className="text-blue-600 font-semibold">
-            Register
-          </Link>
-        </p>
-      </form>
-    </div>
-  );
+    <div id="recaptcha-container"></div>
+
+  </div>
+</div>
+```
+
+);
 };
 
 export default Login;
