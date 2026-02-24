@@ -12,7 +12,7 @@ const VerifyOtp = () => {
 
   // ⭐ OTP as ARRAY (6 boxes)
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
-
+console.log("NEW VERIFY OTP PAGE LOADED");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
