@@ -10,14 +10,15 @@ const VerifyOtp = () => {
 
   const userId = location.state?.userId;
 
-  const [otp, setOtp] = useState("");
+  // ⭐ OTP as ARRAY (6 boxes)
+  const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // ⭐ NEW — resend timer
   const [timer, setTimer] = useState(30);
 
-  // ⭐ countdown logic
+  // ================= TIMER =================
   useEffect(() => {
     if (timer === 0) return;
 
@@ -28,6 +29,34 @@ const VerifyOtp = () => {
     return () => clearInterval(interval);
   }, [timer]);
 
+  // ⭐ JOIN OTP
+  const finalOtp = otp.join("");
+
+  // ================= OTP INPUT HANDLERS =================
+  const handleOtpChange = (value: string, index: number) => {
+    if (!/^\d*$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
+
+    setError("");
+    setSuccess("");
+
+    // auto move forward
+    if (value && index < 5) {
+      const next = document.getElementById(`otp-${index + 1}`);
+      next?.focus();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      const prev = document.getElementById(`otp-${index - 1}`);
+      prev?.focus();
+    }
+  };
+
   // ================= VERIFY OTP =================
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +65,7 @@ const VerifyOtp = () => {
     try {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/api/auth/verify-otp`,
-        { userId, otp }
+        { userId, otp: finalOtp }
       );
 
       setSuccess("Account verified successfully!");
@@ -58,7 +87,7 @@ const VerifyOtp = () => {
       );
 
       setSuccess("OTP resent successfully");
-      setTimer(30); // restart timer
+      setTimer(30);
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed to resend OTP");
     }
@@ -74,21 +103,35 @@ const VerifyOtp = () => {
           Verify Email
         </h2>
 
-        <input
-          type="text"
-          placeholder="Enter OTP"
-          className="w-full border p-3 rounded-lg text-center text-lg tracking-widest"
-          value={otp}
-          onChange={(e) => setOtp(e.target.value)}
-          required
-        />
+        {/* ⭐ OTP BOX GRID */}
+        <div className="flex justify-center gap-2">
+          {otp.map((digit, index) => (
+            <input
+              key={index}
+              id={`otp-${index}`}
+              type="text"
+              inputMode="numeric"
+              maxLength={1}
+              value={digit}
+              onChange={(e) => handleOtpChange(e.target.value, index)}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              className="w-12 h-12 text-center border rounded-lg text-xl"
+            />
+          ))}
+        </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
         {success && <p className="text-green-600 text-sm">{success}</p>}
 
+        {/* ⭐ VERIFY BUTTON */}
         <button
           type="submit"
-          className="w-full bg-[#0A7DCF] text-white py-3 rounded-lg hover:bg-blue-700 transition"
+          disabled={finalOtp.length !== 6}
+          className={`w-full py-3 rounded-lg transition ${
+            finalOtp.length !== 6
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-[#0A7DCF] text-white hover:bg-blue-700"
+          }`}
         >
           Verify Account
         </button>
