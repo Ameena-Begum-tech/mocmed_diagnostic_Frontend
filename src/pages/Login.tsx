@@ -31,7 +31,8 @@ const Login = () => {
         form
       );
 
-      login(res.data.token, res.data.role);
+      // IMPORTANT: await login
+      await login(res.data.token, res.data.role);
 
       navigate("/", { replace: true });
     } catch (err) {
