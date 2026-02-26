@@ -1,15 +1,22 @@
 import { Navigate } from "react-router-dom";
-import { getToken } from "../utils/auth";
+import { useAuth } from "../context/AuthContext";
 
 interface Props {
   children: JSX.Element;
+  allowedRoles?: string[];
 }
 
-const ProtectedRoute = ({ children }: Props) => {
-  const token = getToken();
+const ProtectedRoute = ({ children, allowedRoles }: Props) => {
+  const { isLoggedIn, role } = useAuth();
 
-  if (!token) {
+  // Not logged in
+  if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Role-based protection
+  if (allowedRoles && role && !allowedRoles.includes(role)) {
+    return <Navigate to="/" replace />;
   }
 
   return children;
