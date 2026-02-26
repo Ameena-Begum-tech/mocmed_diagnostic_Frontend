@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import FloatingButtons from "./components/FloatingButtons";
 import CartDrawer from "./components/CartDrawer";
+import Profile from "./pages/Profile";
 
 import Home from "./pages/Home";
 import Packages from "./pages/Packages";
@@ -43,6 +44,7 @@ function App() {
               <Route path="/packages" element={<Packages />} />
               <Route path="/custom-package" element={<CustomPackage />} />
               <Route path="/upload" element={<UploadDocuments />} />
+              <Route path="/profile" element={<Profile />} />
               <Route
                 path="/admin/upload-report"
                 element={
