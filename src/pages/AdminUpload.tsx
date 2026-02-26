@@ -1,23 +1,39 @@
+// TypeScript (React)
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { getToken } from "../utils/auth";
+import Select from "react-select";
 
 interface Patient {
   _id: string;
   name: string;
   email: string;
+  age?: number;
+  gender?: string;
 }
+
+const reportTypeOptions = [
+  { value: "Blood Test", label: "Blood Test" },
+  { value: "MRI", label: "MRI" },
+  { value: "CT Scan", label: "CT Scan" },
+  { value: "X-Ray", label: "X-Ray" },
+];
 
 const AdminUpload = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
+
   const [form, setForm] = useState({
     patientId: "",
     reportName: "",
     reportType: "",
+    name: "",
+    age: "",
+    gender: "",
     file: null as File | null,
   });
 
-  // fetch patients
+  // ⭐ Fetch patients
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -28,13 +44,26 @@ const AdminUpload = () => {
           }
         );
         setPatients(res.data);
-      } catch (err) {
+      } catch {
         alert("Not authorized");
       }
     };
 
     fetchPatients();
   }, []);
+
+  // ⭐ When patient selected → auto-fill fields
+  const handlePatientSelect = (selected: any) => {
+    const patient = patients.find((p) => p._id === selected?.value);
+
+    setForm((prev) => ({
+      ...prev,
+      patientId: selected?.value || "",
+      name: patient?.name || "",
+      age: patient?.age ? String(patient.age) : "",
+      gender: patient?.gender || "",
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +74,9 @@ const AdminUpload = () => {
     data.append("patientId", form.patientId);
     data.append("reportName", form.reportName);
     data.append("reportType", form.reportType);
+    data.append("name", form.name);
+    data.append("age", form.age);
+    data.append("gender", form.gender);
     data.append("report", form.file);
 
     try {
@@ -72,18 +104,17 @@ const AdminUpload = () => {
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <select
-          className="w-full border p-3 rounded"
-          onChange={(e) => setForm({ ...form, patientId: e.target.value })}
-          required
-        >
-          <option value="">Select Patient</option>
-          {patients.map((p) => (
-            <option key={p._id} value={p._id}>
-              {p.name} ({p.email})
-            </option>
-          ))}
-        </select>
+
+        {/* ⭐ PRO SEARCHABLE PATIENT SELECT */}
+        <Select
+          options={patients.map((p) => ({
+            value: p._id,
+            label: `${p.name} (${p.email})`,
+          }))}
+          placeholder="Search Patient..."
+          isSearchable
+          onChange={handlePatientSelect}
+        />
 
         <input
           type="text"
@@ -93,12 +124,39 @@ const AdminUpload = () => {
           required
         />
 
+        {/* ⭐ SEARCHABLE REPORT TYPE */}
+        <Select
+          options={reportTypeOptions}
+          placeholder="Search Report Type..."
+          isSearchable
+          onChange={(selected: any) =>
+            setForm({ ...form, reportType: selected?.value || "" })
+          }
+        />
+
+        {/* ⭐ AUTO-FILLED READONLY FIELDS */}
         <input
           type="text"
-          placeholder="Report Type (CBC, MRI...)"
-          className="w-full border p-3 rounded"
-          onChange={(e) => setForm({ ...form, reportType: e.target.value })}
-          required
+          value={form.name}
+          readOnly
+          className="w-full border p-3 rounded bg-gray-100"
+          placeholder="Patient Name (Auto-filled)"
+        />
+
+        <input
+          type="number"
+          value={form.age}
+          readOnly
+          className="w-full border p-3 rounded bg-gray-100"
+          placeholder="Age (Auto-filled)"
+        />
+
+        <input
+          type="text"
+          value={form.gender}
+          readOnly
+          className="w-full border p-3 rounded bg-gray-100"
+          placeholder="Gender (Auto-filled)"
         />
 
         <input
