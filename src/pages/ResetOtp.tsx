@@ -7,8 +7,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 const ResetOtp = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const userId = state?.userId;
-
+const userId = state?.userId;
+const email = state?.email;
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -52,10 +52,10 @@ const ResetOtp = () => {
     setSuccess("");
 
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
-        { userId }
-      );
+     await axios.post(
+  `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
+  { email }
+);
 
       setSuccess("OTP resent successfully");
       setTimer(30);
