@@ -2,64 +2,78 @@
 // Language: TypeScript (React)
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart, Activity } from "lucide-react";
-import { useState } from "react";
+import { Menu, X, ShoppingCart, Activity, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
   const { cartCount, openCart } = useCart();
+  const { isLoggedIn, role, logoutUser, user } = useAuth();
 
-  // Auth context
-  const { isLoggedIn, role, logoutUser } = useAuth();
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleLogout = () => {
     logoutUser();
     navigate("/");
   };
 
+  const isActive = (path: string) => location.pathname === path;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Packages", path: "/packages" },
     { name: "Custom Package", path: "/custom-package" },
-
     ...(role === "USER" ? [{ name: "Reports", path: "/reports" }] : []),
-
     ...(role === "SUPERADMIN"
       ? [{ name: "Admin Panel", path: "/admin/upload-report" }]
       : []),
-
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
-
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-white shadow-md sticky top-0 z-50 border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
+
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Activity className="w-8 h-8 text-[#0A7DCF]" />
-            <div>
-              <h1 className="text-2xl font-bold text-[#0A7DCF]">
-                Mocmed Diagnostics
-              </h1>
-              <p className="text-xs text-[#0EB39C]">Your Wellness Partner</p>
-            </div>
+            <h1 className="text-xl font-bold text-[#0A7DCF]">
+              Mocmed Diagnostics
+            </h1>
           </Link>
 
-          {/* Desktop Navbar */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center space-x-8">
+
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`transition-colors ${
+                className={`${
                   isActive(link.path)
                     ? "text-[#0A7DCF] font-semibold"
                     : "text-gray-700 hover:text-[#0A7DCF]"
@@ -69,105 +83,82 @@ const Header = () => {
               </Link>
             ))}
 
-            {!isLoggedIn ? (
+            {/* Cart */}
+            <button
+              onClick={openCart}
+              className="relative p-2 text-gray-700 hover:text-[#0A7DCF]"
+            >
+              <ShoppingCart className="w-6 h-6" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#0EB39C] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+
+            {/* Profile Dropdown */}
+            {isLoggedIn ? (
+              <div ref={dropdownRef} className="relative">
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
+                  className="flex items-center space-x-2"
+                >
+                  <div className="w-9 h-9 rounded-full bg-[#0A7DCF] text-white flex items-center justify-center font-semibold">
+                    {user?.username?.charAt(0).toUpperCase()}
+                  </div>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+
+                {profileOpen && (
+                  <div className="absolute right-0 mt-3 w-48 bg-white border rounded-xl shadow-lg">
+                    <div className="px-4 py-3 border-b">
+                      <p className="text-sm font-semibold">
+                        {user?.username}
+                      </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {user?.email}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        navigate("/profile");
+                        setProfileOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                    >
+                      My Profile
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setProfileOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
               <Link
                 to="/login"
-                className="bg-[#0A7DCF] text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+                className="bg-[#0A7DCF] text-white px-4 py-2 rounded-lg"
               >
                 Login
               </Link>
-            ) : (
-              <button
-                onClick={handleLogout}
-                className="border-2 border-[#0A7DCF] text-[#0A7DCF] px-4 py-2 rounded-lg hover:bg-[#0A7DCF] hover:text-white transition duration-200 font-semibold"
-              >
-                Logout
-              </button>
             )}
-
-            {/* Cart Button */}
-            <button
-              onClick={openCart}
-              className="relative p-2 text-gray-700 hover:text-[#0A7DCF]"
-            >
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#0EB39C] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </button>
           </nav>
 
-          {/* Mobile Top Bar */}
-          <div className="lg:hidden flex items-center space-x-4">
-            <button
-              onClick={openCart}
-              className="relative p-2 text-gray-700 hover:text-[#0A7DCF]"
-            >
-              <ShoppingCart className="w-6 h-6" />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#0EB39C] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-[#0A7DCF]"
-            >
-              {isMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden">
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              {isMenuOpen ? <X /> : <Menu />}
             </button>
           </div>
         </div>
-
-        {/* Mobile Dropdown Menu */}
-        {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t">
-            <nav className="flex flex-col space-y-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`transition-colors ${
-                    isActive(link.path)
-                      ? "text-[#0A7DCF] font-semibold"
-                      : "text-gray-700 hover:text-[#0A7DCF]"
-                  }`}
-                >
-                  {link.name}
-                </Link>
-              ))}
-
-              {/* Mobile Login / Logout Button */}
-              {!isLoggedIn ? (
-                <Link
-                  to="/login"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="bg-[#0A7DCF] text-white px-4 py-2 rounded-lg text-center"
-                >
-                  Login
-                </Link>
-              ) : (
-                <button
-                  onClick={() => {
-                    handleLogout();
-                    setIsMenuOpen(false);
-                  }}
-                  className="border-2 border-[#0A7DCF] text-[#0A7DCF] px-4 py-2 rounded-lg font-semibold"
-                >
-                  Logout
-                </button>
-              )}
-            </nav>
-          </div>
-        )}
       </div>
     </header>
   );
