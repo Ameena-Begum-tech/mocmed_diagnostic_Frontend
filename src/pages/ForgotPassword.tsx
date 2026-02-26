@@ -20,7 +20,12 @@ const ForgotPassword = () => {
         { email }
       );
 
-      navigate("/reset-otp", { state: { userId: res.data.userId } });
+     navigate("/reset-otp", {
+  state: {
+    userId: res.data.userId,
+    email: email
+  }
+});
 
     } catch (err: any) {
       setError(err.response?.data?.message || "Failed");
