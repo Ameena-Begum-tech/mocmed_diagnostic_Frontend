@@ -44,25 +44,32 @@ function App() {
               <Route path="/packages" element={<Packages />} />
               <Route path="/custom-package" element={<CustomPackage />} />
               <Route path="/upload" element={<UploadDocuments />} />
-              <Route path="/profile" element={<Profile />} />
               <Route
-                path="/admin/upload-report"
-                element={
-                  <AdminRoute>
-                    <AdminUpload />
-                  </AdminRoute>
-                }
-              />
+  path="/profile"
+  element={
+    <ProtectedRoute>
+      <Profile />
+    </ProtectedRoute>
+  }
+/>
+              <Route
+  path="/admin/upload-report"
+  element={
+    <ProtectedRoute allowedRoles={["SUPERADMIN"]}>
+      <AdminUpload />
+    </ProtectedRoute>
+  }
+/>
 
               <Route path="/login" element={<Login />} />
-              <Route
-                path="/reports"
-                element={
-                  <ProtectedRoute>
-                    <Reports />
-                  </ProtectedRoute>
-                }
-              />
+             <Route
+  path="/reports"
+  element={
+    <ProtectedRoute allowedRoles={["USER"]}>
+      <Reports />
+    </ProtectedRoute>
+  }
+/>
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/terms" element={<Terms />} />
