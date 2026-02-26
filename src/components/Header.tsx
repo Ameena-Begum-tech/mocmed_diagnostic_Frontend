@@ -1,3 +1,6 @@
+// Header.tsx
+// Language: TypeScript (React)
+
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ShoppingCart, Activity } from "lucide-react";
 import { useState } from "react";
@@ -10,7 +13,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { cartCount, openCart } = useCart();
 
-  // ✅ Only source of truth
+  // Auth context
   const { isLoggedIn, role, logoutUser } = useAuth();
 
   const handleLogout = () => {
@@ -23,10 +26,8 @@ const Header = () => {
     { name: "Packages", path: "/packages" },
     { name: "Custom Package", path: "/custom-package" },
 
-    // Patient
     ...(role === "USER" ? [{ name: "Reports", path: "/reports" }] : []),
 
-    // Admin
     ...(role === "SUPERADMIN"
       ? [{ name: "Admin Panel", path: "/admin/upload-report" }]
       : []),
@@ -41,6 +42,7 @@ const Header = () => {
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
+          {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
             <Activity className="w-8 h-8 text-[#0A7DCF]" />
             <div>
@@ -51,6 +53,7 @@ const Header = () => {
             </div>
           </Link>
 
+          {/* Desktop Navbar */}
           <nav className="hidden lg:flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link
@@ -74,15 +77,15 @@ const Header = () => {
                 Login
               </Link>
             ) : (
-             <button
-  onClick={handleLogout}
-  className="border-2 border-[#0A7DCF] text-[#0A7DCF] px-4 py-2 rounded-lg hover:bg-[#0A7DCF] hover:text-white transition duration-200 font-semibold"
->
-  Logout
-</button>
-
+              <button
+                onClick={handleLogout}
+                className="border-2 border-[#0A7DCF] text-[#0A7DCF] px-4 py-2 rounded-lg hover:bg-[#0A7DCF] hover:text-white transition duration-200 font-semibold"
+              >
+                Logout
+              </button>
             )}
 
+            {/* Cart Button */}
             <button
               onClick={openCart}
               className="relative p-2 text-gray-700 hover:text-[#0A7DCF]"
@@ -96,13 +99,20 @@ const Header = () => {
             </button>
           </nav>
 
+          {/* Mobile Top Bar */}
           <div className="lg:hidden flex items-center space-x-4">
             <button
               onClick={openCart}
               className="relative p-2 text-gray-700 hover:text-[#0A7DCF]"
             >
               <ShoppingCart className="w-6 h-6" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#0EB39C] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
             </button>
+
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="text-gray-700 hover:text-[#0A7DCF]"
@@ -116,6 +126,7 @@ const Header = () => {
           </div>
         </div>
 
+        {/* Mobile Dropdown Menu */}
         {isMenuOpen && (
           <div className="lg:hidden py-4 border-t">
             <nav className="flex flex-col space-y-4">
@@ -133,6 +144,27 @@ const Header = () => {
                   {link.name}
                 </Link>
               ))}
+
+              {/* Mobile Login / Logout Button */}
+              {!isLoggedIn ? (
+                <Link
+                  to="/login"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="bg-[#0A7DCF] text-white px-4 py-2 rounded-lg text-center"
+                >
+                  Login
+                </Link>
+              ) : (
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="border-2 border-[#0A7DCF] text-[#0A7DCF] px-4 py-2 rounded-lg font-semibold"
+                >
+                  Logout
+                </button>
+              )}
             </nav>
           </div>
         )}
