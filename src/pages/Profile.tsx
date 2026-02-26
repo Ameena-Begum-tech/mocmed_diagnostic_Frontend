@@ -13,6 +13,7 @@ interface User {
 
 const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -28,18 +29,25 @@ const Profile = () => {
 
         setUser(res.data);
       } catch (error) {
-        console.error("Failed to load profile");
+        console.error("Failed to fetch profile");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProfile();
   }, []);
 
-  if (!user) return <div className="p-10 text-center">Loading...</div>;
+  if (loading) {
+    return <div className="p-10 text-center">Loading profile...</div>;
+  }
+
+  if (!user) {
+    return <div className="p-10 text-center">Unable to load profile.</div>;
+  }
 
   return (
     <div className="max-w-4xl mx-auto mt-12 bg-white shadow rounded-2xl p-10">
-      
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-[#0A7DCF]">
           Hello, {user.username}
@@ -61,7 +69,7 @@ const Profile = () => {
           </div>
         )}
 
-        {user.age && (
+        {user.age !== undefined && (
           <div>
             <span className="font-semibold">Age:</span> {user.age}
           </div>
@@ -73,7 +81,6 @@ const Profile = () => {
           </div>
         )}
       </div>
-
     </div>
   );
 };
