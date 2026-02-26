@@ -78,7 +78,7 @@ const email = state?.email;
 
         <input
           type="text"
-          inputMode="numeric"
+          
           maxLength={6}
           placeholder="Enter OTP"
           className="w-full border p-3 rounded-lg text-center text-lg tracking-widest"
