@@ -1,5 +1,3 @@
-// TypeScript (React)
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { getToken } from "../utils/auth";
@@ -9,8 +7,6 @@ interface Patient {
   _id: string;
   name: string;
   email: string;
-  age?: number;
-  gender?: string;
 }
 
 const reportTypeOptions = [
@@ -27,13 +23,11 @@ const AdminUpload = () => {
     patientId: "",
     reportName: "",
     reportType: "",
-    name: "",
     age: "",
     gender: "",
     file: null as File | null,
   });
 
-  // ⭐ Fetch patients
   useEffect(() => {
     const fetchPatients = async () => {
       try {
@@ -52,19 +46,6 @@ const AdminUpload = () => {
     fetchPatients();
   }, []);
 
-  // ⭐ When patient selected → auto-fill fields
-  const handlePatientSelect = (selected: any) => {
-    const patient = patients.find((p) => p._id === selected?.value);
-
-    setForm((prev) => ({
-      ...prev,
-      patientId: selected?.value || "",
-      name: patient?.name || "",
-      age: patient?.age ? String(patient.age) : "",
-      gender: patient?.gender || "",
-    }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -74,7 +55,6 @@ const AdminUpload = () => {
     data.append("patientId", form.patientId);
     data.append("reportName", form.reportName);
     data.append("reportType", form.reportType);
-    data.append("name", form.name);
     data.append("age", form.age);
     data.append("gender", form.gender);
     data.append("report", form.file);
@@ -92,6 +72,15 @@ const AdminUpload = () => {
       );
 
       alert("Report uploaded successfully");
+
+      setForm({
+        patientId: "",
+        reportName: "",
+        reportType: "",
+        age: "",
+        gender: "",
+        file: null,
+      });
     } catch {
       alert("Upload failed");
     }
@@ -105,7 +94,6 @@ const AdminUpload = () => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
 
-        {/* ⭐ PRO SEARCHABLE PATIENT SELECT */}
         <Select
           options={patients.map((p) => ({
             value: p._id,
@@ -113,18 +101,46 @@ const AdminUpload = () => {
           }))}
           placeholder="Search Patient..."
           isSearchable
-          onChange={handlePatientSelect}
+          onChange={(selected: any) =>
+            setForm({ ...form, patientId: selected?.value || "" })
+          }
         />
+
+        <input
+          type="number"
+          placeholder="Enter Age"
+          className="w-full border p-3 rounded"
+          value={form.age}
+          onChange={(e) =>
+            setForm({ ...form, age: e.target.value })
+          }
+          required
+        />
+
+        <select
+          className="w-full border p-3 rounded"
+          value={form.gender}
+          onChange={(e) =>
+            setForm({ ...form, gender: e.target.value })
+          }
+          required
+        >
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
 
         <input
           type="text"
           placeholder="Report Name"
           className="w-full border p-3 rounded"
-          onChange={(e) => setForm({ ...form, reportName: e.target.value })}
+          onChange={(e) =>
+            setForm({ ...form, reportName: e.target.value })
+          }
           required
         />
 
-        {/* ⭐ SEARCHABLE REPORT TYPE */}
         <Select
           options={reportTypeOptions}
           placeholder="Search Report Type..."
@@ -134,35 +150,9 @@ const AdminUpload = () => {
           }
         />
 
-        {/* ⭐ AUTO-FILLED READONLY FIELDS */}
-        <input
-          type="text"
-          value={form.name}
-          readOnly
-          className="w-full border p-3 rounded bg-gray-100"
-          placeholder="Patient Name (Auto-filled)"
-        />
-
-        <input
-          type="number"
-          value={form.age}
-          readOnly
-          className="w-full border p-3 rounded bg-gray-100"
-          placeholder="Age (Auto-filled)"
-        />
-
-        <input
-          type="text"
-          value={form.gender}
-          readOnly
-          className="w-full border p-3 rounded bg-gray-100"
-          placeholder="Gender (Auto-filled)"
-        />
-
         <input
           type="file"
           accept="application/pdf"
-          className="w-full"
           onChange={(e) =>
             setForm({
               ...form,
