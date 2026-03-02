@@ -13,6 +13,7 @@ const Header = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
+
   const { cartCount, openCart } = useCart();
   const { isLoggedIn, role, logoutUser, user } = useAuth();
 
@@ -25,6 +26,7 @@ const Header = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
+  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -66,7 +68,7 @@ const Header = () => {
             </h1>
           </Link>
 
-          {/* Desktop Nav */}
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
 
             {navLinks.map((link) => (
@@ -110,7 +112,8 @@ const Header = () => {
                 </button>
 
                 {profileOpen && (
-                  <div className="absolute right-0 mt-3 w-48 bg-white border rounded-xl shadow-lg">
+                  <div className="absolute right-0 mt-3 w-52 bg-white border rounded-xl shadow-lg">
+
                     <div className="px-4 py-3 border-b">
                       <p className="text-sm font-semibold">
                         {user?.username}
@@ -120,6 +123,7 @@ const Header = () => {
                       </p>
                     </div>
 
+                    {/* My Profile */}
                     <button
                       onClick={() => {
                         navigate("/profile");
@@ -130,6 +134,20 @@ const Header = () => {
                       My Profile
                     </button>
 
+                    {/* SUPERADMIN ONLY */}
+                    {role === "SUPERADMIN" && (
+                      <button
+                        onClick={() => {
+                          navigate("/patient-uploads");
+                          setProfileOpen(false);
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
+                      >
+                        Patient Uploads
+                      </button>
+                    )}
+
+                    {/* Logout */}
                     <button
                       onClick={() => {
                         handleLogout();
