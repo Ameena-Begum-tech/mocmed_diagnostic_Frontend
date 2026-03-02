@@ -6,17 +6,17 @@ import axios from "axios";
 
 interface Report {
   _id: string;
-  reportName: string;
-  reportType: string;
-  name: string;
-  age: number;
-  gender: string;
+  reportName?: string;
+  reportType?: string;
+  name?: string;
+  age?: number;
+  gender?: string;
   fileUrl: string;
-  createdAt: string;
-  patient: {
-    name: string;
-    email: string;
-    phone: string;
+  createdAt?: string;
+  patient?: {
+    name?: string;
+    email?: string;
+    phone?: string;
   };
 }
 
@@ -33,6 +33,7 @@ const PatientUploads = () => {
 
   const role = localStorage.getItem("role");
 
+  // 🔐 Frontend Role Protection
   if (role !== "SUPERADMIN") {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -56,7 +57,7 @@ const PatientUploads = () => {
         }
       );
 
-      setReports(res.data);
+      setReports(res.data || []);
     } catch (error) {
       console.error("Failed to fetch reports");
     } finally {
@@ -90,23 +91,33 @@ const PatientUploads = () => {
     fetchReports();
   }, []);
 
+  // ✅ Safe Filtering + Sorting
   const filteredReports = useMemo(() => {
     let data = [...reports];
 
-    // Search
+    // Safe Search
     data = data.filter((report) =>
-      report.name.toLowerCase().includes(searchTerm.toLowerCase())
+      (report.name || "")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
     );
 
-    // Filter
+    // Safe Filter
     if (filterType !== "ALL") {
-      data = data.filter((r) => r.reportType === filterType);
+      data = data.filter(
+        (r) => (r.reportType || "") === filterType
+      );
     }
 
-    // Sort
+    // Safe Sort
     data.sort((a, b) => {
-      const dateA = new Date(a.createdAt).getTime();
-      const dateB = new Date(b.createdAt).getTime();
+      const dateA = a.createdAt
+        ? new Date(a.createdAt).getTime()
+        : 0;
+      const dateB = b.createdAt
+        ? new Date(b.createdAt).getTime()
+        : 0;
+
       return sortOrder === "NEWEST"
         ? dateB - dateA
         : dateA - dateB;
@@ -115,7 +126,9 @@ const PatientUploads = () => {
     return data;
   }, [reports, searchTerm, filterType, sortOrder]);
 
-  const totalPages = Math.ceil(filteredReports.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(
+    filteredReports.length / ITEMS_PER_PAGE
+  );
 
   const paginatedReports = filteredReports.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -139,6 +152,7 @@ const PatientUploads = () => {
       {/* Controls */}
       <div className="flex flex-col md:flex-row gap-4 mb-6 justify-between">
 
+        {/* Search */}
         <input
           type="text"
           placeholder="Search by patient name..."
@@ -150,6 +164,7 @@ const PatientUploads = () => {
           className="border px-4 py-2 rounded-lg w-full md:w-72"
         />
 
+        {/* Filter */}
         <select
           value={filterType}
           onChange={(e) => {
@@ -159,11 +174,16 @@ const PatientUploads = () => {
           className="border px-4 py-2 rounded-lg w-full md:w-52"
         >
           <option value="ALL">All Types</option>
-          {[...new Set(reports.map((r) => r.reportType))].map((type) => (
+          {[...new Set(
+            reports
+              .map((r) => r.reportType)
+              .filter(Boolean)
+          )].map((type) => (
             <option key={type}>{type}</option>
           ))}
         </select>
 
+        {/* Sort */}
         <button
           onClick={() =>
             setSortOrder((prev) =>
@@ -174,7 +194,6 @@ const PatientUploads = () => {
         >
           Sort: {sortOrder === "NEWEST" ? "Newest" : "Oldest"}
         </button>
-
       </div>
 
       {/* Table */}
@@ -196,21 +215,32 @@ const PatientUploads = () => {
             {paginatedReports.map((report) => (
               <tr key={report._id} className="border-b hover:bg-gray-50">
                 <td className="px-4 py-3 font-medium">
-                  {report.reportName}
+                  {report.reportName || "N/A"}
                 </td>
 
                 <td className="px-4 py-3">
-                  <div>{report.name}</div>
+                  <div>{report.name || "N/A"}</div>
                   <div className="text-xs text-gray-500">
-                    {report.patient?.email}
+                    {report.patient?.email || "N/A"}
                   </div>
                 </td>
 
-                <td className="px-4 py-3">{report.age}</td>
-                <td className="px-4 py-3">{report.gender}</td>
-                <td className="px-4 py-3">{report.reportType}</td>
                 <td className="px-4 py-3">
-                  {new Date(report.createdAt).toLocaleDateString()}
+                  {report.age ?? "N/A"}
+                </td>
+
+                <td className="px-4 py-3">
+                  {report.gender || "N/A"}
+                </td>
+
+                <td className="px-4 py-3">
+                  {report.reportType || "N/A"}
+                </td>
+
+                <td className="px-4 py-3">
+                  {report.createdAt
+                    ? new Date(report.createdAt).toLocaleDateString()
+                    : "N/A"}
                 </td>
 
                 <td className="px-4 py-3 text-center">
@@ -255,21 +285,23 @@ const PatientUploads = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-6 gap-2">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentPage(index + 1)}
-            className={`px-3 py-1 rounded ${
-              currentPage === index + 1
-                ? "bg-[#0A7DCF] text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6 gap-2">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`px-3 py-1 rounded ${
+                currentPage === index + 1
+                  ? "bg-[#0A7DCF] text-white"
+                  : "bg-gray-200"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
