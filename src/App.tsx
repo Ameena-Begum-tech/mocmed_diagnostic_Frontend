@@ -25,6 +25,8 @@ import VerifyOtp from "./pages/VerifyOtp";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetOtp from "./pages/ResetOtp";
 import NewPassword from "./pages/NewPassword";
+import PatientUploads from "./pages/PatientUploads";
+
 
 function App() {
   return (
@@ -36,6 +38,7 @@ function App() {
           <main className="flex-grow">
             <Routes>
               <Route path="/register" element={<Register />} />
+              <Route path="/patient-uploads" element={<PatientUploads />} />
               <Route path="/verify-otp" element={<VerifyOtp />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-otp" element={<ResetOtp />} />
