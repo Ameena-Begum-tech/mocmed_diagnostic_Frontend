@@ -11,17 +11,14 @@ interface Props {
 const ProtectedRoute = ({ children, allowedRoles }: Props) => {
   const { isLoggedIn, role, loading } = useAuth();
 
-  // Wait until auth state is restored
   if (loading) {
-    return null; // or a spinner component
+    return null; // or a loading spinner
   }
 
-  // Not logged in
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
   }
 
-  // Role protection
   if (allowedRoles && role && !allowedRoles.includes(role)) {
     return <Navigate to="/" replace />;
   }
