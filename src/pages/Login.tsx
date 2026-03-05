@@ -1,4 +1,3 @@
-// Login.tsx
 // Language: React + TypeScript (TSX)
 
 import { useState } from "react";
@@ -8,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { loginUser } = useAuth();
 
   const [form, setForm] = useState({
     loginId: "",
@@ -31,12 +30,20 @@ const Login = () => {
         form
       );
 
-      login(res.data.token, res.data.role);
+      loginUser({
+        token: res.data.token,
+        user: {
+          username: res.data.name,
+          email: form.loginId,
+          role: res.data.role,
+        },
+      });
 
       navigate("/", { replace: true });
-    } catch (err) {
+
+    } catch (err: any) {
       const message =
-        (err as any)?.response?.data?.message || "Login failed";
+        err?.response?.data?.message || "Login failed";
       setError(message);
     }
   };
