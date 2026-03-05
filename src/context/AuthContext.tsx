@@ -1,3 +1,5 @@
+// Language: TypeScript (React)
+
 import { createContext, useContext, useEffect, useState } from "react";
 
 interface UserType {
@@ -10,6 +12,7 @@ interface AuthContextType {
   isLoggedIn: boolean;
   user: UserType | null;
   role: string | null;
+  loading: boolean;
   loginUser: (data: any) => void;
   logoutUser: () => void;
 }
@@ -20,8 +23,9 @@ export const AuthProvider = ({ children }: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
   const [role, setRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // ⭐ important
 
-  // 🔥 Restore auth state on page refresh
+  // Restore auth on refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
@@ -32,6 +36,8 @@ export const AuthProvider = ({ children }: any) => {
       setUser(JSON.parse(storedUser));
       setRole(storedRole);
     }
+
+    setLoading(false); // ⭐ auth check finished
   }, []);
 
   const loginUser = (data: any) => {
@@ -53,7 +59,14 @@ export const AuthProvider = ({ children }: any) => {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, user, role, loginUser, logoutUser }}
+      value={{
+        isLoggedIn,
+        user,
+        role,
+        loading, // ⭐ expose loading
+        loginUser,
+        logoutUser,
+      }}
     >
       {children}
     </AuthContext.Provider>
