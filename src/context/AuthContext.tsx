@@ -1,82 +1,65 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import { createContext, useContext, useEffect, useState } from "react";
 
-interface User {
-  name: string;
+interface UserType {
   username: string;
   email: string;
-  phone?: string;
-  age?: number;
-  gender?: string;
   role: string;
 }
 
-interface AuthType {
+interface AuthContextType {
   isLoggedIn: boolean;
+  user: UserType | null;
   role: string | null;
-  user: User | null;
-  login: (token: string, role: string) => Promise<void>;
+  loginUser: (data: any) => void;
   logoutUser: () => void;
 }
 
-const AuthContext = createContext<AuthType | null>(null);
+const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: any) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserType | null>(null);
   const [role, setRole] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
 
-  // Fetch user from backend
-  const fetchUser = async (token: string) => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/auth/me`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setUser(res.data);
-      setRole(res.data.role);
-      setIsLoggedIn(true);
-    } catch (error) {
-      console.error("Failed to fetch user");
-      logoutUser();
-    }
-  };
-
-  // On page refresh
+  // 🔥 Restore auth state on page refresh
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+    const storedRole = localStorage.getItem("role");
 
-    if (token) {
-      fetchUser(token);
+    if (token && storedUser && storedRole) {
+      setIsLoggedIn(true);
+      setUser(JSON.parse(storedUser));
+      setRole(storedRole);
     }
   }, []);
 
-  const login = async (token: string, role: string) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("role", role);
-    await fetchUser(token);
+  const loginUser = (data: any) => {
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("role", data.user.role);
+
+    setIsLoggedIn(true);
+    setUser(data.user);
+    setRole(data.user.role);
   };
 
   const logoutUser = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
+    localStorage.clear();
     setIsLoggedIn(false);
-    setRole(null);
     setUser(null);
+    setRole(null);
   };
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, role, user, login, logoutUser }}
+      value={{ isLoggedIn, user, role, loginUser, logoutUser }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
 
-export const useAuth = () => useContext(AuthContext)!;
+export const useAuth = () => {
+  return useContext(AuthContext)!;
+};
